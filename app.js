@@ -47,6 +47,7 @@ app.listen(3000,function(){
 const express = require("express");
 const https = require("https");
 const bodyparser = require("body-parser");
+const weatherdata = JSON.parse(data);
 
 const app = express();
 
@@ -56,6 +57,14 @@ app.use(express.static("public"));
 app.get("/", function (req, res) {
     res.sendFile(__dirname + "/index.html");
 });
+
+if (weatherdata.cod !== 200) {  // Check if API returned a valid response
+    console.error("Error:", weatherdata.message); // Log the error message
+    res.send("Error: " + weatherdata.message);  // Send an error message to frontend
+    return;
+}
+
+const temp = weatherdata.main.temp;
 
 app.post("/", function (req, res) {
     const city = req.body.cityname;
